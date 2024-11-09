@@ -1,18 +1,21 @@
 using System;
-using HandUtilitites;
+using System.Collections.Generic;
 
-namespace ServerCommunicationUtilities
+[Serializable]
+public class RequestWrapper
 {
-    [Serializable]
-    public class RequestWrapper
-    {
-        public HandWrapper handWrapper;
-        public int note;
+    public List<HandWrapper> HandWrappers;
+    public int Note;
 
-        public RequestWrapper(HandWrapper handWrapper, int note)
-        {
-            this.handWrapper = handWrapper;
-            this.note = note;
-        }
+
+    public RequestWrapper()
+    {
+        HandWrappers = new List<HandWrapper>();
+    }
+
+    public RequestWrapper(int note)
+    {
+        HandWrappers = new List<HandWrapper>();
+        Note = note;
     }
 }

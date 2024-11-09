@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "com.hgs.tone": "https://github.com/homy-game-studio/hgs-unity-tone.git#upm",
-    "com.meta.xr.sdk.all": "69.0.0",
+    "com.meta.xr.sdk.all": "69.0.1",
     "com.unity.collab-proxy": "2.5.2",
     "com.unity.feature.development": "1.0.1",
     "com.unity.nuget.newtonsoft-json": "3.2.1",

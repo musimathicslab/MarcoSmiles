@@ -6,11 +6,11 @@ public class TrainingCanvasUIManager : MonoBehaviour
 {
     
     [SerializeField]
-    private TMPro.TextMeshProUGUI noteToPlay;
+    private TMPro.TextMeshProUGUI _noteToPlay;
     [SerializeField]
-    private TMPro.TextMeshProUGUI modelGuess;
+    private TMPro.TextMeshProUGUI _modelGuess;
     [SerializeField]
-    private TMPro.TextMeshProUGUI status;
+    private TMPro.TextMeshProUGUI _status;
 
     // Start is called before the first frame update
     void Start()
@@ -26,17 +26,17 @@ public class TrainingCanvasUIManager : MonoBehaviour
 
     public void SetNoteToPlay(string note)
     {
-        noteToPlay.text = note;
+        _noteToPlay.text = note;
     }
 
     public void SetModelGuess(string infoText)
     {
-        modelGuess.text = infoText;
+        _modelGuess.text = infoText;
     }
 
     public void SetStatus(string statusText)
     {
-        status.text = statusText;
+        _status.text = statusText;
     }
 
 }

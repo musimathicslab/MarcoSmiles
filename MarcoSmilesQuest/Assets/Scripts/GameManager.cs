@@ -6,27 +6,29 @@ public class GameManager : MonoBehaviour
 {
 
     [SerializeField]
-    private UIManager uiManager;
+    private UIManager _uiManager;
     [SerializeField]
-    private TrainingScript trainingScript;
+    private TrainingScript _trainingScript;
     [SerializeField]
-    private CountdownScript countdownScript;
+    private CountdownScript _countdownScript;
     [SerializeField]
-    private GameObject OVRCameraRigIntegration;
+    private GameObject _ovrCameraRigIntegration;
     [SerializeField]
-    private SynthScript synthScript;
+    private SynthScript _synthScript;
+    [SerializeField]
+    private ServerGateway _serverGateway;
 
     // Start is called before the first frame update
     void Start()
     {
-        OVRCameraRigIntegration.SetActive(true);
-        uiManager.ShowPreTrainingCanvas();
+        _ovrCameraRigIntegration.SetActive(true);
+        LoadNotesList();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     void OnEnable()
@@ -36,6 +38,9 @@ public class GameManager : MonoBehaviour
         CountdownScript.OnCountdownEnded += StartTraining;
         NextFourNotes.OnNextFourNotesChanged += UpdateNextFourNotes;
         TrainingScript.PlayNote += PlayNote;
+        SaveListButtonScript.OnCreateList += SaveNotesList;
+        HomeButtonScript.OnBackHome += ShowHome;
+        NewNotesListButton.OnNewNoteListButtonClicked += _uiManager.ShowCreateNotesListCanvas;
     }
 
     void OnDisable()
@@ -45,37 +50,84 @@ public class GameManager : MonoBehaviour
         CountdownScript.OnCountdownEnded -= StartTraining;
         NextFourNotes.OnNextFourNotesChanged -= UpdateNextFourNotes;
         TrainingScript.PlayNote -= PlayNote;
+        SaveListButtonScript.OnCreateList -= SaveNotesList;
+        HomeButtonScript.OnBackHome -= ShowHome;
+        NewNotesListButton.OnNewNoteListButtonClicked -= _uiManager.ShowCreateNotesListCanvas;
+    }
+
+    void LoadNotesList()
+    {
+        // Load Note[] from player prefs
+        string json = PlayerPrefs.GetString("noteslist");
+        if (json == null || json.Trim().Length == 0)
+        {
+            // If the notes list is empty, we have to create it -> Show new screen
+            _uiManager.ShowCreateNotesListCanvas();
+        }
+        else
+        {
+            // If the notes list is not empty, load it
+            NotesList.Notes = NotesList.FromJson(json);
+            _uiManager.ShowPreTrainingCanvas();
+        }
+    }
+
+    void SaveNotesList(string startNote, int length)
+    {
+        // Tell the server to create a new model
+        _serverGateway.CreateNewModel(length, (response) =>
+        {
+            // Set notesList in NotesList
+            NotesList.CreateNotesList(new Note(startNote), length);
+            // Save Note[] to player prefs
+            PlayerPrefs.SetString("noteslist", NotesList.ToJson());
+            _uiManager.ShowPreTrainingCanvas();
+        });
     }
 
     void StartCountdown(StartButtonScript startButtonScript)
     {
-        uiManager.ShowTrainingCanvas();
-        uiManager.ShowCountdownCanvas();
-        countdownScript.StartCountdown();
+        if (NotesList.Notes != null && NotesList.Notes.Length > 0)
+        {
+            _uiManager.ShowTrainingCanvas();
+            _uiManager.ShowCountdownCanvas();
+            _countdownScript.StartCountdown();
+        }
+        else
+        {
+            _uiManager.ShowCreateNotesListCanvas();
+        }
     }
 
     void StartTraining(CountdownScript countdownScript)
     {
         countdownScript.Reset();
-        uiManager.ShowNextFourNotesCanvas();
-        trainingScript.StartTraining();
+        _uiManager.ShowNextFourNotesCanvas();
+        _uiManager.HideHandInteractors();
+        _trainingScript.StartTraining();
     }
 
     void EndTraining(EndButtonScript endButtonScript)
     {
-        countdownScript.StopCountdown();
-        trainingScript.StopTraining();
-        uiManager.ShowPreTrainingCanvas();
+        _countdownScript.StopCountdown();
+        _trainingScript.StopTraining();
+        _uiManager.ShowPreTrainingCanvas();
+        _uiManager.ShowHandInteractors();
     }
 
-    void UpdateNextFourNotes(NextFourNotes nextFourNotes)
+    void UpdateNextFourNotes()
     {
-        uiManager.UpdateNextFourNotes(nextFourNotes);
+        _uiManager.UpdateNextFourNotes(NextFourNotes.Notes);
     }
 
-    void PlayNote(NotesUtilities.Note note)
+    void PlayNote(Note note)
     {
-        synthScript.PlayNote(note);
+        _synthScript.PlayNote(note);
+    }
+
+    void ShowHome()
+    {
+        _uiManager.ShowPreTrainingCanvas();
     }
 
 }

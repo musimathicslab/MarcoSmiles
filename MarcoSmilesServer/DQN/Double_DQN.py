@@ -54,7 +54,7 @@ class DQNAgent:
         self.tau = tau
         self.tau = 1
 
-        self.target_update_interval = 100
+        self.target_update_interval = 1
 
         self.update_counter = 0
 
@@ -146,7 +146,7 @@ class Network:
     action_space_shape: int - the number of possible outputs (#notes to be predicted)
     """
 
-    def __init__(self, observation_space_shape=154, action_space_shape=12, batch_size=1, max_steps=10, max_episodes=100):
+    def __init__(self, observation_space_shape=45, action_space_shape=12, batch_size=128, max_steps=10, max_episodes=100):
         self.batch_size = batch_size
         self.max_steps = max_steps
         self.max_episodes = max_episodes

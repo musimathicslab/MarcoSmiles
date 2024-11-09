@@ -1,9 +1,9 @@
 from flask import Flask, jsonify, request, session
-from utils.utils import read_request
+from utils.utils import load_action_space, read_request, toint
 from DQN.Double_DQN import Network
+import numpy as np
 
 app = Flask(__name__)
-
 
 @app.route('/hello-world', methods=['GET'])
 def hello_world():
@@ -14,12 +14,14 @@ def hello_world():
 def hand_data():
     try:
         global network
-        
-        # Print data received
+
+        predictions = []
         hand_data, note = read_request(request.json)
-        prediction = network.learn(hand_data, note)
-        
-        # Restituisci il risultato come risposta JSON
+        for pose in hand_data:
+            prediction = network.learn(pose, note)
+            predictions.append(toint(prediction))
+
+        prediction = max(set(predictions), key=predictions.count)
         return jsonify({"message": f"{prediction}"})
     except Exception as e:
         print(e)
@@ -32,22 +34,23 @@ def end_training():
         global network
         network.save_model()
         network.save_target_model()
+        network.env.save_action_space()
         return jsonify({"message": "Network saved"}), 200
     except Exception as e:
         print(e)
         return jsonify({"message": "Error saving network"}), 500
-    
+
+
 @app.route('/new-model', methods=['POST'])
 def new_model():
     try:
         global network
         output_dimension: int = request.json.get('output_dimension', None)
-        if output_dimension is not None:
-            network = Network(action_space_shape=output_dimension)
-        else:
-            network = Network()
+        network = Network(
+            action_space_shape=output_dimension) if output_dimension is not None else Network()
         network.save_model()
         network.save_target_model()
+        network.env.save_action_space()
         return jsonify({"message": "New model created"})
     except Exception as e:
         print(e)
@@ -55,7 +58,9 @@ def new_model():
 
 
 if __name__ == '__main__':
-    network: Network = Network()
+    action_space_shape_dim = load_action_space()
+    network = Network(
+        action_space_shape=action_space_shape_dim) if action_space_shape_dim is not None else Network()
     network.load_model()
     network.load_target_model()
     app.run(host='0.0.0.0', port=5005)

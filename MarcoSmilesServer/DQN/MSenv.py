@@ -1,3 +1,4 @@
+import json
 import gym
 import numpy as np
 
@@ -33,3 +34,7 @@ class MS_env(gym.Env):
             done = True
 
         return self.state, reward, done, {}
+    
+    def save_action_space(self):
+        with open('models/action_space.json', 'w') as f:
+            json.dump(self.action_space.n, f)

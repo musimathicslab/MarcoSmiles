@@ -6,11 +6,17 @@ public class UIManager : MonoBehaviour
 {
 
     [SerializeField]
-    private GameObject preTrainingCanvasGameObject;
+    private GameObject _createNotesListCanvasGameObject;
     [SerializeField]
-    private GameObject trainingCanvasGameObject;
+    private GameObject _preTrainingCanvasGameObject;
     [SerializeField]
-    private GameObject secondaryCanvasGameObject;
+    private GameObject _trainingCanvasGameObject;
+    [SerializeField]
+    private GameObject _secondaryCanvasGameObject;
+    [SerializeField]
+    private GameObject _leftHandInteractorsGameObject;
+    [SerializeField]
+    private GameObject _rightHandInteractorsGameObject;
 
 
     // Start is called before the first frame update
@@ -25,33 +31,57 @@ public class UIManager : MonoBehaviour
         
     }
 
+    public void ShowHandInteractors()
+    {
+        _leftHandInteractorsGameObject.SetActive(true);
+        _rightHandInteractorsGameObject.SetActive(true);
+    }
+
+    public void HideHandInteractors()
+    {
+        _leftHandInteractorsGameObject.SetActive(false);
+        _rightHandInteractorsGameObject.SetActive(false);
+    }
+
+    public void ShowCreateNotesListCanvas()
+    {
+        _createNotesListCanvasGameObject.SetActive(true);
+        _preTrainingCanvasGameObject.SetActive(false);
+        _trainingCanvasGameObject.SetActive(false);
+        _secondaryCanvasGameObject.SetActive(false);
+    }
+
     public void ShowTrainingCanvas()
     {
-        trainingCanvasGameObject.SetActive(true);
-        secondaryCanvasGameObject.SetActive(true);
-        preTrainingCanvasGameObject.SetActive(false);
+        _createNotesListCanvasGameObject.SetActive(false);
+        _preTrainingCanvasGameObject.SetActive(false);
+        _trainingCanvasGameObject.SetActive(true);
+        _secondaryCanvasGameObject.SetActive(true);
     }
 
     public void ShowPreTrainingCanvas()
     {
-        preTrainingCanvasGameObject.SetActive(true);
-        trainingCanvasGameObject.SetActive(false);
-        secondaryCanvasGameObject.SetActive(false);
+        _createNotesListCanvasGameObject.SetActive(false);
+        _preTrainingCanvasGameObject.SetActive(true);
+        _trainingCanvasGameObject.SetActive(false);
+        _secondaryCanvasGameObject.SetActive(false);
     }
 
     public void ShowCountdownCanvas()
     {
-        secondaryCanvasGameObject.GetComponent<SecondaryCanvasUIManager>().ShowCountdownCanvas();
+        _secondaryCanvasGameObject.transform.position = _trainingCanvasGameObject.transform.position + _trainingCanvasGameObject.transform.right * 1.5f;
+        _secondaryCanvasGameObject.GetComponent<SecondaryCanvasUIManager>().ShowCountdownCanvas();
     }
 
     public void ShowNextFourNotesCanvas()
     {
-        secondaryCanvasGameObject.GetComponent<SecondaryCanvasUIManager>().ShowNextFourNotesCanvas();
+        _secondaryCanvasGameObject.transform.position = _trainingCanvasGameObject.transform.position + _trainingCanvasGameObject.transform.right * 1.5f;
+        _secondaryCanvasGameObject.GetComponent<SecondaryCanvasUIManager>().ShowNextFourNotesCanvas();
     }
 
-    public void UpdateNextFourNotes(NextFourNotes nextFourNotes)
+    public void UpdateNextFourNotes(Note[] nextFourNotes)
     {
-        secondaryCanvasGameObject.GetComponent<SecondaryCanvasUIManager>().UpdateNextFourNotes(nextFourNotes);
+        _secondaryCanvasGameObject.GetComponent<SecondaryCanvasUIManager>().UpdateNextFourNotes(nextFourNotes);
     }
 
 }

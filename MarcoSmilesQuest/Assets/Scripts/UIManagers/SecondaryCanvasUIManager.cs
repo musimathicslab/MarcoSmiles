@@ -8,13 +8,13 @@ public class SecondaryCanvasUIManager : MonoBehaviour
 {
 
     [SerializeField]
-    private TMPro.TextMeshProUGUI countdownText;
+    private TMPro.TextMeshProUGUI _countdownText;
     [SerializeField]
-    private Canvas countdownCanvas;
+    private Canvas _countdownCanvas;
     [SerializeField]
-    private Canvas nextFourNotesCanvas;
+    private Canvas _nextFourNotesCanvas;
     [SerializeField]
-    private TMPro.TextMeshProUGUI[] nextFourNotesTexts;
+    private TMPro.TextMeshProUGUI[] _nextFourNotesTexts;
 
     // Start is called before the first frame update
     void Start()
@@ -30,26 +30,26 @@ public class SecondaryCanvasUIManager : MonoBehaviour
 
     public void SetCountdownText(string text)
     {
-        countdownText.text = text;
+        _countdownText.text = text;
     }
 
     public void ShowCountdownCanvas()
     {
-        nextFourNotesCanvas.gameObject.SetActive(false);
-        countdownCanvas.gameObject.SetActive(true);
+        _nextFourNotesCanvas.gameObject.SetActive(false);
+        _countdownCanvas.gameObject.SetActive(true);
     }
 
     public void ShowNextFourNotesCanvas()
     {
-        countdownCanvas.gameObject.SetActive(false);
-        nextFourNotesCanvas.gameObject.SetActive(true);
+        _countdownCanvas.gameObject.SetActive(false);
+        _nextFourNotesCanvas.gameObject.SetActive(true);
     }
 
-    public void UpdateNextFourNotes(NextFourNotes nextFourNotes)
+    public void UpdateNextFourNotes(Note[] nextFourNotes)
     {
-        for (int i = 0; i < nextFourNotes.notes.Length; i++)
+        for (int i = 0; i < nextFourNotes.Length; i++)
         {
-            nextFourNotesTexts[i].text = NotesUtilities.NoteToString(nextFourNotes.notes[i]);
+            _nextFourNotesTexts[i].text = nextFourNotes[i].ToString();
         }
     }
 }
