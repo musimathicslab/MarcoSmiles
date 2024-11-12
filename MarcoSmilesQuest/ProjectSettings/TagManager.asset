@@ -9,6 +9,9 @@ TagManager:
   - QDSUISharedThemeColor
   - Octave
   - Key
+  - QDSUISecondaryButton
+  - QDSUIIcon
+  - MRUK_GO
   layers:
   - Default
   - TransparentFX

@@ -1,0 +1,180 @@
+# Blender MTL File: 'Acoustic Guitar001.blend'
+# Material Count: 16
+
+newmtl Brass_polished
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.955973 0.630757 0.304987
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+
+newmtl Bridge
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump -bm 0.100000 D:\\3D modeling projects\\BLENDER\\_Upload\\Acoustic Guitar\\Textures\\Bridge_normal.jpg
+map_Kd D:\\3D modeling projects\\BLENDER\\_Upload\\Acoustic Guitar\\Textures\\Bridge_color.jpg
+map_Ns D:\\3D modeling projects\\BLENDER\\_Upload\\Acoustic Guitar\\Textures\\Bridge_roughness.jpg
+
+newmtl Fretboard
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump D:\\3D modeling projects\\BLENDER\\_Upload\\Acoustic Guitar\\Textures\\Fretboard_normal.jpg
+map_Kd D:\\3D modeling projects\\BLENDER\\_Upload\\Acoustic Guitar\\Textures\\Fretboard_color.jpg
+map_Ns D:\\3D modeling projects\\BLENDER\\_Upload\\Acoustic Guitar\\Textures\\Fretboard_roughness.jpg
+
+newmtl Glossy_Black
+Ns 728.999998
+Ka 1.000000 1.000000 1.000000
+Kd 0.007189 0.007189 0.007189
+Ks 0.200000 0.200000 0.200000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+
+newmtl Interior
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd D:\\3D modeling projects\\BLENDER\\_Upload\\Acoustic Guitar\\Textures\\Bracing_color.jpg
+map_Ns D:\\3D modeling projects\\BLENDER\\_Upload\\Acoustic Guitar\\Textures\\Bracing_roughness.jpg
+
+newmtl Kerfing_interior
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd D:\\3D modeling projects\\BLENDER\\_Upload\\Acoustic Guitar\\Textures\\Kerfing_color.jpg
+map_Ns D:\\3D modeling projects\\BLENDER\\_Upload\\Acoustic Guitar\\Textures\\Kerfing_roughness.jpg
+
+newmtl Lining
+Ns 728.999998
+Ka 1.000000 1.000000 1.000000
+Kd 0.912945 0.867819 0.740366
+Ks 0.400000 0.400000 0.400000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+
+newmtl Markings
+Ns 575.999996
+Ka 1.000000 1.000000 1.000000
+Kd 0.908464 0.908464 0.908464
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+
+newmtl Pading
+Ns 9.000004
+Ka 1.000000 1.000000 1.000000
+Kd 0.011495 0.011495 0.011495
+Ks 0.200000 0.200000 0.200000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+
+newmtl Pickguard
+Ns 81.000006
+Ka 1.000000 1.000000 1.000000
+Kd 0.008568 0.008568 0.005605
+Ks 0.100000 0.100000 0.100000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+
+newmtl Saddle&Nut
+Ns 143.999983
+Ka 1.000000 1.000000 1.000000
+Kd 0.908464 0.856591 0.767114
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+
+newmtl Sounboard
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump -bm 0.500000 D:\\3D modeling projects\\BLENDER\\_Upload\\Acoustic Guitar\\Textures\\Sounboard_normal.jpg
+map_Kd D:\\3D modeling projects\\BLENDER\\_Upload\\Acoustic Guitar\\Textures\\Sounboard_color.jpg
+map_Ns D:\\3D modeling projects\\BLENDER\\_Upload\\Acoustic Guitar\\Textures\\Sounboard_roughness.jpg
+
+newmtl Stand
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump D:\\3D modeling projects\\BLENDER\\_Upload\\Acoustic Guitar\\Textures\\Stand_normal.jpg
+map_Kd D:\\3D modeling projects\\BLENDER\\_Upload\\Acoustic Guitar\\Textures\\Stand_color.jpg
+map_Ns D:\\3D modeling projects\\BLENDER\\_Upload\\Acoustic Guitar\\Textures\\Stand_roughness.jpg
+
+newmtl Strings
+Ns 575.999996
+Ka 1.000000 1.000000 1.000000
+Kd 0.551887 0.551887 0.551887
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+
+newmtl Wood_Back
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd D:\\3D modeling projects\\BLENDER\\_Upload\\Acoustic Guitar\\Textures\\Back_color.jpg
+
+newmtl Wood_Sides
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd D:\\3D modeling projects\\BLENDER\\_Upload\\Acoustic Guitar\\Textures\\Sides_color.jpg

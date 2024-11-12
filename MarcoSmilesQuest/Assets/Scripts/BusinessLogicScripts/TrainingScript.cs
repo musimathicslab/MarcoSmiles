@@ -74,7 +74,8 @@ public class TrainingScript : MonoBehaviour
         if (!_handReader.IsHandTracking())
         {
             Debug.LogError("Hand tracking lost!");
-            Invoke("Train", 0);
+            _trainingCanvasUIManager.SetModelGuess("No hand data, retrying..");
+            Invoke("Train", 1.5f);
         }
         else
         {

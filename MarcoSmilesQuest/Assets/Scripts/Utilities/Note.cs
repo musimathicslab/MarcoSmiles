@@ -1,9 +1,12 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
 public class Note
 {
+
+    // private static List<string> pitchesSorted = new List<string> { "DO", "DO#", "RE", "RE#", "MI", "FA", "FA#", "SOL", "SOL#", "LA", "LA#", "SI" };
 
     [Serializable]
     public enum PitchEnum
@@ -234,6 +237,20 @@ public class Note
     public string ToStringInternational()
     {
         return PitchEuropeanToInternational(PitchToString(Pitch)) + OctaveToString(Octave);
+    }
+
+    public static int CompareTo(string x, string y)
+    {
+        Note note1 = new Note(x);
+        Note note2 = new Note(y);
+
+        if (note1.Octave != note2.Octave){
+            return note1.Octave.CompareTo(note2.Octave);
+        }
+        else
+        {
+            return note1.Pitch.CompareTo(note2.Pitch);
+        }
     }
 
 }

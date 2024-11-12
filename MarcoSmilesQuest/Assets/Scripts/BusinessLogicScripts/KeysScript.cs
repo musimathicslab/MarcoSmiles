@@ -8,6 +8,9 @@ using UnityEngine.UI;
 public class KeysScript : MonoBehaviour
 {
 
+    // Change it in some way
+    // private List<string> orderedNotes = new List<string> { "DO5", "DO#5", "RE5", "RE#5", "MI5", "FA5", "FA#5", "SOL5", "SOL#5", "LA5", "LA#5", "SI5", "DO4", "DO#4", "RE4", "RE#4", "MI4", "FA4", "FA#4", "SOL4", "SOL#4", "LA4", "LA#4", "SI4", "DO3", "DO#3", "RE3", "RE#3", "MI3", "FA3", "FA#3", "SOL3", "SOL#3", "LA3", "LA#3", "SI3" };
+
     [SerializeField]
     private GameObject _keyboard;
     private List<GameObject> _keys;
@@ -41,8 +44,8 @@ public class KeysScript : MonoBehaviour
     void Start()
     {
         List<GameObject> allChildren = GetComponentsInChildren<Transform>().Select(t => t.gameObject).ToList();
-        // octaves = allChildren.Where(o => o.tag == "Octave").ToList();
         _keys = allChildren.Where(k => k.tag == "Key").ToList();
+        _keys = _keys.OrderBy(k => new Note(k.name).Octave).ThenBy(k => new Note(k.name).Pitch).ToList();
 
         foreach (GameObject key in _keys)
         {
@@ -61,10 +64,10 @@ public class KeysScript : MonoBehaviour
 
     void OnEnable()
     {
-        ResetKeys();
+        // ResetKeys();
     }
 
-    private void SelectKey(Toggle keyToggle)
+    public void SelectKey(Toggle keyToggle)
     {
         if (keyToggle.isOn)
         {
