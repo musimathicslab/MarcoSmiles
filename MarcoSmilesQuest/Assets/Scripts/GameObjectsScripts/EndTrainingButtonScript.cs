@@ -3,10 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StartButtonScript : MonoBehaviour
+public class EndTrainingButtonScript : MonoBehaviour
 {
 
-    public static event Action<StartButtonScript> OnStartButtonClicked;
+    public static event Action OnEndButtonClicked;
 
     // Start is called before the first frame update
     void Start()
@@ -22,7 +22,7 @@ public class StartButtonScript : MonoBehaviour
 
     public void OnMouseDown()
     {
-        OnStartButtonClicked?.Invoke(this);
+        OnEndButtonClicked?.Invoke();
     }
-
+    
 }

@@ -1,12 +1,10 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class NewNotesListButtonScript : MonoBehaviour
+public class StartPlayingButtonScript : MonoBehaviour
 {
 
-    public static event Action OnNewNoteListButtonClicked;
+    public static event Action OnStartPlayingButtonClicked;
 
     // Start is called before the first frame update
     void Start()
@@ -22,7 +20,7 @@ public class NewNotesListButtonScript : MonoBehaviour
 
     public void OnMouseDown()
     {
-        OnNewNoteListButtonClicked?.Invoke();
+        OnStartPlayingButtonClicked?.Invoke();
     }
     
 }

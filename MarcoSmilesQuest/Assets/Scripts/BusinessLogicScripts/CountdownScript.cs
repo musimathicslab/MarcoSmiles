@@ -6,7 +6,7 @@ public class CountdownScript : MonoBehaviour
 
     [SerializeField]
     private SecondaryCanvasUIManager _secondaryCanvasUIManager;
-    public static event Action<CountdownScript> OnCountdownEnded;
+    public static event Action OnCountdownEnded;
     private int _countdown = 3;
 
     // Start is called before the first frame update
@@ -27,6 +27,7 @@ public class CountdownScript : MonoBehaviour
     public void StopCountdown()
     {
         CancelInvoke();
+        Reset();
     }
 
     private void Tick()
@@ -36,7 +37,7 @@ public class CountdownScript : MonoBehaviour
         if (_countdown < 0)
         {   
             CancelInvoke();
-            OnCountdownEnded?.Invoke(this);
+            OnCountdownEnded?.Invoke();
         }
     }
 

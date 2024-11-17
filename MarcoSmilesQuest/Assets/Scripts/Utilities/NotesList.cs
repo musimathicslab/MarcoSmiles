@@ -30,7 +30,29 @@ public class NotesList
     public static Note GetRandomNote()
     {
         System.Random random = new System.Random();
-        return Notes[random.Next(Notes.Length)];
+
+        // Total weight of all notes
+        double? totalWeight = Notes?.Sum(note => 1.0 / (note.GuessedCounter + 1));
+
+        // The weight of the note to be selected
+        double? randomValue = random.NextDouble() * totalWeight;
+
+        // Select the note
+        double cumulativeWeight = 0.0;
+        if (Notes != null)
+        {
+            foreach (Note note in Notes)
+            {
+                cumulativeWeight += 1.0 / (note.GuessedCounter + 1);
+                if (randomValue <= cumulativeWeight)
+                {
+                    return note;
+                }
+            }
+        }
+
+        // JIC
+        return new Note(Note.PitchEnum.DO, Note.OctaveEnum.FOUR);
     }
 
     public static string ToJson()

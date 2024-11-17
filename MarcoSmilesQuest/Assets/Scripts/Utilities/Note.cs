@@ -6,8 +6,6 @@ using UnityEngine;
 public class Note
 {
 
-    // private static List<string> pitchesSorted = new List<string> { "DO", "DO#", "RE", "RE#", "MI", "FA", "FA#", "SOL", "SOL#", "LA", "LA#", "SI" };
-
     [Serializable]
     public enum PitchEnum
     {
@@ -42,28 +40,31 @@ public class Note
     public PitchEnum Pitch;
     [SerializeField]
     public OctaveEnum Octave;
+    public int GuessedCounter;
 
     public Note()
     {
-
     }
 
     public Note(string pitch, string octave)
     {
         Pitch = StringToPitch(pitch);
         Octave = StringToOctave(octave);
+        GuessedCounter = 0;
     }
 
     public Note(string note)
     {
         Pitch = StringToPitch(note.Substring(0, note.Length - 1));
         Octave = StringToOctave(note.Substring(note.Length - 1));
+        GuessedCounter = 0;
     }
 
     public Note(PitchEnum pitch, OctaveEnum octave)
     {
         Pitch = pitch;
         Octave = octave;
+        GuessedCounter = 0;
     }
 
     private static PitchEnum GetRandomPitch()
@@ -237,20 +238,6 @@ public class Note
     public string ToStringInternational()
     {
         return PitchEuropeanToInternational(PitchToString(Pitch)) + OctaveToString(Octave);
-    }
-
-    public static int CompareTo(string x, string y)
-    {
-        Note note1 = new Note(x);
-        Note note2 = new Note(y);
-
-        if (note1.Octave != note2.Octave){
-            return note1.Octave.CompareTo(note2.Octave);
-        }
-        else
-        {
-            return note1.Pitch.CompareTo(note2.Pitch);
-        }
     }
 
 }

@@ -15,6 +15,8 @@ public class SecondaryCanvasUIManager : MonoBehaviour
     private Canvas _nextFourNotesCanvas;
     [SerializeField]
     private TMPro.TextMeshProUGUI[] _nextFourNotesTexts;
+    [SerializeField]
+    private TMPro.TextMeshProUGUI _accuracyText;
 
     // Start is called before the first frame update
     void Start()
@@ -52,4 +54,10 @@ public class SecondaryCanvasUIManager : MonoBehaviour
             _nextFourNotesTexts[i].text = nextFourNotes[i].ToString();
         }
     }
+
+    public void SetAccuracyText(string text)
+    {
+        _accuracyText.text = text + "%";
+    }
+
 }

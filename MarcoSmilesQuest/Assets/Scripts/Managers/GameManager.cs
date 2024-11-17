@@ -10,11 +10,15 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private CountdownScript _countdownScript;
     [SerializeField]
-    private GameObject _ovrCameraRigIntegration;
+    private PlayScript _playScript;
     [SerializeField]
     private SynthScript _synthScript;
     [SerializeField]
     private ServerGateway _serverGateway;
+    [SerializeField]
+    private GameObject _ovrCameraRigIntegration;
+
+    private bool _playMode = false;
 
     // Start is called before the first frame update
     void Start()
@@ -31,26 +35,38 @@ public class GameManager : MonoBehaviour
 
     void OnEnable()
     {
-        StartButtonScript.OnStartButtonClicked += StartCountdown;
-        EndButtonScript.OnEndButtonClicked += EndTraining;
+        StartTrainingButtonScript.OnStartButtonClicked += StartCountdown;
+        EndTrainingButtonScript.OnEndButtonClicked += EndTraining;
+        StartPlayingButtonScript.OnStartPlayingButtonClicked += StartPlaying;
+        StopPlayingButtonScript.OnEndButtonClicked += StopPlaying;
+        NewNotesListButtonScript.OnNewNoteListButtonClicked += _uiManager.ShowCreateNotesListCanvas;
+        HomeButtonScript.OnBackHome += ShowHome;
+        SaveListButtonScript.OnCreateList += SaveNotesList;
         CountdownScript.OnCountdownEnded += StartTraining;
         NextFourNotes.OnNextFourNotesChanged += UpdateNextFourNotes;
         TrainingScript.PlayNote += PlayNote;
-        SaveListButtonScript.OnCreateList += SaveNotesList;
-        HomeButtonScript.OnBackHome += ShowHome;
-        NewNotesListButton.OnNewNoteListButtonClicked += _uiManager.ShowCreateNotesListCanvas;
+        TrainingScript.UpdateAccuracy += UpdateAccuracy;
+        TrainingScript.StartProgressBar += StartProgressBar;
+        PlayScript.PlayNote += PlayNote;
+        PlayScript.StartProgressBar += StartProgressBar;
     }
 
     void OnDisable()
     {
-        StartButtonScript.OnStartButtonClicked -= StartCountdown;
-        EndButtonScript.OnEndButtonClicked -= EndTraining;
+        StartTrainingButtonScript.OnStartButtonClicked -= StartCountdown;
+        EndTrainingButtonScript.OnEndButtonClicked -= EndTraining;
+        StartPlayingButtonScript.OnStartPlayingButtonClicked -= StartPlaying;
+        StopPlayingButtonScript.OnEndButtonClicked -= StopPlaying;
+        NewNotesListButtonScript.OnNewNoteListButtonClicked -= _uiManager.ShowCreateNotesListCanvas;
+        HomeButtonScript.OnBackHome -= ShowHome;
+        SaveListButtonScript.OnCreateList -= SaveNotesList;
         CountdownScript.OnCountdownEnded -= StartTraining;
         NextFourNotes.OnNextFourNotesChanged -= UpdateNextFourNotes;
         TrainingScript.PlayNote -= PlayNote;
-        SaveListButtonScript.OnCreateList -= SaveNotesList;
-        HomeButtonScript.OnBackHome -= ShowHome;
-        NewNotesListButton.OnNewNoteListButtonClicked -= _uiManager.ShowCreateNotesListCanvas;
+        TrainingScript.UpdateAccuracy -= UpdateAccuracy;
+        TrainingScript.StartProgressBar -= StartProgressBar;
+        PlayScript.PlayNote -= PlayNote;
+        PlayScript.StartProgressBar -= StartProgressBar;
     }
 
     void LoadNotesList()
@@ -83,7 +99,7 @@ public class GameManager : MonoBehaviour
         });
     }
 
-    void StartCountdown(StartButtonScript startButtonScript)
+    void StartCountdown()
     {
         if (NotesList.Notes != null && NotesList.Notes.Length > 0)
         {
@@ -97,18 +113,37 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void StartTraining(CountdownScript countdownScript)
+    void StartTraining()
     {
-        countdownScript.Reset();
+        _playMode = false;
+        _countdownScript.Reset();
         _uiManager.ShowNextFourNotesCanvas();
         _uiManager.HideHandInteractors();
         _trainingScript.StartTraining();
     }
 
-    void EndTraining(EndButtonScript endButtonScript)
+    void EndTraining()
     {
         _countdownScript.StopCountdown();
         _trainingScript.StopTraining();
+        _uiManager.ShowPreTrainingCanvas();
+        _uiManager.ShowHandInteractors();
+        StopProgressBar();
+    }
+
+    void StartPlaying()
+    {
+        _playMode = true;
+        _uiManager.ShowPlayCanvas();
+        _uiManager.HideHandInteractors();
+        _playScript.StartPlayCountdown();
+    }
+
+    void StopPlaying()
+    {
+        StopProgressBar();
+        _playMode = false;
+        _playScript.StopPlaying();
         _uiManager.ShowPreTrainingCanvas();
         _uiManager.ShowHandInteractors();
     }
@@ -126,6 +161,21 @@ public class GameManager : MonoBehaviour
     void ShowHome()
     {
         _uiManager.ShowPreTrainingCanvas();
+    }
+
+    void UpdateAccuracy(int accuracy)
+    {
+        _uiManager.UpdateAccuracy(accuracy.ToString());
+    }
+
+    void StartProgressBar(float poseTime)
+    {
+        _uiManager.StartProgressBar(_playMode, poseTime);
+    }
+
+    void StopProgressBar()
+    {
+        _uiManager.StopProgressBar(_playMode);
     }
 
 }

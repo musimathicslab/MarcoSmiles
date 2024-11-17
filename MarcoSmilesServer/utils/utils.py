@@ -3,7 +3,7 @@ import numpy as np
 
 def read_request(request_as_json):
     hand_data = request_as_json.get('HandWrappers')
-    note = request_as_json.get('Note')
+    note = request_as_json.get('Note', None)
     # All poses
     all_poses = []
 
@@ -12,7 +12,7 @@ def read_request(request_as_json):
         numerical_values = []
         for joint in pose:
             # Position
-            positions = pose[joint] # dove credi di stare in Java? testa di cazzo
+            positions = pose[joint]
             for coordinate in positions:
                 numerical_values.append(positions[coordinate])
         all_poses.append(numerical_values)

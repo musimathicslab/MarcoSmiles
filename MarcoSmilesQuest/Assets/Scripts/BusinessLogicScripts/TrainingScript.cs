@@ -6,6 +6,8 @@ using UnityEngine;
 public class TrainingScript : MonoBehaviour
 {
     public static event Action<Note> PlayNote;
+    public static event Action<int> UpdateAccuracy;
+    public static event Action<float> StartProgressBar;
 
     [SerializeField]
     private HandReader _handReader;
@@ -16,7 +18,7 @@ public class TrainingScript : MonoBehaviour
 
     private Note _noteToPlay;
     private int _cycles = 0;
-    private float _poseTime = 4;
+    private float _poseTime = 4f;
     private const float _fedbackTime = 1.5f;
 
     // Start is called before the first frame update
@@ -32,7 +34,15 @@ public class TrainingScript : MonoBehaviour
     void OnEnable()
     {
         _cycles = 0;
+        _trainingCanvasUIManager.SetNoteToPlay("..");
+        _trainingCanvasUIManager.SetModelGuess("..");
+        _trainingCanvasUIManager.SetStatus("..");
         NextFourNotes.GenerateNextFourNotes();
+    }
+
+    public void StartTraining()
+    {
+        Invoke("Train", 0);
     }
 
     private void Train()
@@ -45,15 +55,11 @@ public class TrainingScript : MonoBehaviour
         _trainingCanvasUIManager.SetNoteToPlay(_noteToPlay.ToString());
         _trainingCanvasUIManager.SetModelGuess("...");
         _trainingCanvasUIManager.SetStatus("Keep steady pose..");
+        StartProgressBar?.Invoke(_poseTime);
 
         // Collect data and send it to the server
         Invoke("CollectDataAndSendToServer", _poseTime);
 
-    }
-
-    public void StartTraining()
-    {
-        Invoke("Train", 0);
     }
 
     public void StopTraining()
@@ -79,6 +85,9 @@ public class TrainingScript : MonoBehaviour
         }
         else
         {
+            // Tell the user we're collecting data
+            _trainingCanvasUIManager.SetStatus("Acquiring pose..");
+
             // Init RequestWrapper
             RequestWrapper requestWrapper = new RequestWrapper(_noteToPlay.ComputeDistance());
 
@@ -99,14 +108,27 @@ public class TrainingScript : MonoBehaviour
         // Send the hand data to the server
         _serverGateway.SendHandData(requestWrapper, (response) =>
         {
-            int messageAsInt = int.Parse(JSON.Parse(response)["message"]);
-            Note notePredicted = NotesList.Notes[messageAsInt];
+            // Parse the response
+            (int accuracy, Note notePredicted) = ParseResponse(response);
+
+            // Do the business logic
             _trainingCanvasUIManager.SetModelGuess(notePredicted.ToString());
-            PlayNote?.Invoke(notePredicted);
             UpdateStatus(notePredicted);
-            UpdatePoseTime();
+            PlayNote?.Invoke(notePredicted);
+            UpdateAccuracy?.Invoke(accuracy);
+            // UpdatePoseTime();
+
+            // Repeat!
             Invoke("Train", _fedbackTime);
         });
+    }
+
+    private static (int, Note) ParseResponse(string response)
+    {
+        int accuracy = int.Parse(JSON.Parse(response)["accuracy"]);
+        int messageAsInt = int.Parse(JSON.Parse(response)["message"]);
+        Note notePredicted = NotesList.Notes[messageAsInt];
+        return (accuracy, notePredicted);
     }
 
     private void UpdateStatus(Note modelGuess)
@@ -114,6 +136,7 @@ public class TrainingScript : MonoBehaviour
         if (modelGuess == _noteToPlay)
         {
             _trainingCanvasUIManager.SetStatus("Correct!");
+            _noteToPlay.GuessedCounter++;
         }
         else
         {

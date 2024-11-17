@@ -8,6 +8,8 @@ import numpy as np
 import torch
 import dill
 
+from utils.utils import toint
+
 
 class DQN(nn.Module):
 
@@ -146,7 +148,7 @@ class Network:
     action_space_shape: int - the number of possible outputs (#notes to be predicted)
     """
 
-    def __init__(self, observation_space_shape=45, action_space_shape=12, batch_size=128, max_steps=10, max_episodes=100):
+    def __init__(self, observation_space_shape=45, action_space_shape=12, batch_size=128, max_steps=10, max_episodes=100, predicted_counter=0, guessed_counter=0):
         self.batch_size = batch_size
         self.max_steps = max_steps
         self.max_episodes = max_episodes
@@ -157,6 +159,8 @@ class Network:
         self.episode_rewards = []
         self.env = MS_env(observation_space_shape, action_space_shape)
         self.agent = DQNAgent(self.env)
+        self.predicted_counter = predicted_counter
+        self.guessed_counter = guessed_counter
 
     def learn(self, state, actual_label):
         state = self.env.reset(state, actual_label)
@@ -182,7 +186,7 @@ class Network:
         if self.episode_counter == self.max_episodes:
             self.epoch_rewards.append(self.episode_reward)
             self.episode_counter = 0
-
+        
         return action
 
     def save_model(self, model_name_prefix="models/model"):
@@ -216,6 +220,19 @@ class Network:
             with open(model_path, "rb") as f:
                 buffer = io.BytesIO(f.read())
                 self.agent.target_model.load_state_dict(torch.load(buffer, weights_only=False))
+        except Exception as e:
+            print(e)
+            
+    def save_predicted_and_guessed(self):
+        with open('models/predicted_and_guessed.json', 'w') as f:
+            json.dump({"predicted": self.predicted_counter, "guessed": self.guessed_counter}, f)
+    
+    def load_predicted_and_guessed(self):
+        try:
+            with open('models/predicted_and_guessed.json', 'r') as f:
+                data = json.load(f)
+                self.predicted_counter = data["predicted"]
+                self.guessed_counter = data["guessed"]
         except Exception as e:
             print(e)
 

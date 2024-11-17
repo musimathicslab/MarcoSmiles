@@ -1,0 +1,144 @@
+using System;
+using Newtonsoft.Json;
+using OVRSimpleJSON;
+using UnityEngine;
+
+public class PlayScript : MonoBehaviour
+{
+    public static event Action<Note> PlayNote;
+    public static event Action<float> StartProgressBar;
+
+    private Note _noteToPlay;
+    private int _cycles = 0;
+    private int _countdown = 3;
+    private float _poseTime = 2f;
+    private const float _feedbackTime = 1.5f;
+
+    [SerializeField]
+    private HandReader _handReader;
+    [SerializeField]
+    private ServerGateway _serverGateway;
+    [SerializeField]
+    private PlayCanvasUIManager _playCanvasUIManager;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
+
+    void OnEnable()
+    {
+        _cycles = 0;
+        _countdown = 3;
+        _playCanvasUIManager.SetModelGuess("..");
+        _playCanvasUIManager.SetStatus("..");
+    }
+
+    public void StartPlayCountdown()
+    {
+        _playCanvasUIManager.SetStatus("Get ready..");
+        StartProgressBar?.Invoke(3f);
+        InvokeRepeating("Tick", 0, 1);
+    }
+
+    private void Tick()
+    {
+        _playCanvasUIManager.SetStatus("Start playing in " + _countdown.ToString() + "...");
+        _countdown--;
+        if (_countdown < 0)
+        {
+            CancelInvoke();
+            Invoke("Play", 0f);
+        }
+    }
+
+    public void Play()
+    {
+        // Tell him what to do
+        _playCanvasUIManager.SetModelGuess("..");
+        _playCanvasUIManager.SetStatus("Keep steady pose..");
+        StartProgressBar?.Invoke(_poseTime);
+
+        // Collect data and send it to the server
+        Invoke("CollectDataAndSendToServer", _poseTime);
+    }
+
+    private void CollectDataAndSendToServer()
+    {
+
+        if (!_handReader.IsHandTracking())
+        {
+            Debug.LogError("Hand tracking lost!");
+            _playCanvasUIManager.SetModelGuess("No hand data, retrying..");
+            Invoke("Play", _feedbackTime);
+        }
+        else
+        {
+            // Tell the user we're collecting data
+            _playCanvasUIManager.SetStatus("Acquiring pose..");
+
+            // Init RequestWrapper
+            RequestWrapper requestWrapper = new RequestWrapper();
+
+            // Get the hand data
+            for (int i = 0; i < 16; i++)
+            {
+                HandWrapper leftHandWrapper = _handReader.ReadHand(HandSide.Left);
+                requestWrapper.HandWrappers.Add(leftHandWrapper);
+            }
+
+            SendToServer(requestWrapper);
+        }
+    }
+
+    private void SendToServer(RequestWrapper requestWrapper)
+    {
+        // Send the hand data to the server
+        _serverGateway.SendHandDataPlayMode(requestWrapper, (response) =>
+        {
+            // Parse the response
+            Note notePredicted = ParseResponse(response);
+
+            // Do the business logic
+            _playCanvasUIManager.SetModelGuess(notePredicted.ToString());
+            _playCanvasUIManager.SetStatus("Playing..");
+            PlayNote?.Invoke(notePredicted);
+            // UpdatePoseTime();
+
+            // Repeat!
+            Invoke("Play", _feedbackTime);
+        });
+    }
+
+    private static Note ParseResponse(string response)
+    {
+        int messageAsInt = int.Parse(JSON.Parse(response)["message"]);
+        Note notePredicted = NotesList.Notes[messageAsInt];
+        return notePredicted;
+    }
+
+    private void UpdatePoseTime()
+    {
+        if (_poseTime >= 1.5f && _cycles % 5 == 0)
+        {
+            _poseTime = _poseTime - 0.5f;
+        }
+        _cycles++;
+    }
+
+    public void StopPlaying()
+    {
+        CancelInvoke("Play");
+        CancelInvoke("CollectDataAndSendToServer");
+        CancelInvoke("Tick");
+        _playCanvasUIManager.SetModelGuess("..");
+    }
+
+}

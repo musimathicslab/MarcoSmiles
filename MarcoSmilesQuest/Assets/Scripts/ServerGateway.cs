@@ -8,6 +8,7 @@ public class ServerEndpointsEnum
     public static string
         BASE_URL = "http://localhost:5005",
         HAND_DATA = "/hand-data",
+        HAND_DATA_PLAY_MODE = "/hand-data-play-mode",
         END_TRAINING = "/save-model",
         NEW_MODEL = "/new-model";
 };
@@ -16,7 +17,7 @@ public class ServerGateway : MonoBehaviour
 {
     [SerializeField]
     private string _serverUrl;
-    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -35,6 +36,11 @@ public class ServerGateway : MonoBehaviour
     public void SendHandData(RequestWrapper requestWrapper, System.Action<string> callback)
     {
         StartCoroutine(ExecRequest(_serverUrl + ServerEndpointsEnum.HAND_DATA, "POST", JsonConvert.SerializeObject(requestWrapper), callback));
+    }
+
+    public void SendHandDataPlayMode(RequestWrapper requestWrapper, System.Action<string> callback)
+    {
+        StartCoroutine(ExecRequest(_serverUrl + ServerEndpointsEnum.HAND_DATA_PLAY_MODE, "POST", JsonConvert.SerializeObject(requestWrapper), callback));
     }
 
     public void EndTraining(System.Action<string> callback)
