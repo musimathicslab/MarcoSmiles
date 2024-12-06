@@ -1,10 +1,8 @@
-from flask import Flask, jsonify, request, session
+from flask import Flask, jsonify, request
 from utils.utils import load_action_space, read_request, toint
 from DQN.Double_DQN import Network
-import numpy as np
 
 app = Flask(__name__)
-
 
 @app.route('/hello-world', methods=['GET'])
 def hello_world():
@@ -18,6 +16,7 @@ def hand_data():
         predictions = []
 
         hand_data, note = read_request(request.json)
+        print("Note received: " + str(note))
 
         # Predict whole batch
         for pose in hand_data:
@@ -26,6 +25,7 @@ def hand_data():
 
         # Get the most common prediction
         prediction = max(set(predictions), key=predictions.count)
+        print("Predicted: " + str(prediction))
 
         # Live accuracy logic
         network.predicted_counter += 1
@@ -53,11 +53,17 @@ def hand_data_play_mode():
 
         # Predict whole batch
         for pose in hand_data:
-            prediction = network.agent.get_action(pose)
+            prediction = network.agent.get_action(pose, training_mode=False)
             predictions.append(toint(prediction))
 
         # Get the most common prediction
         prediction = max(set(predictions), key=predictions.count)
+        print("Predicted: " + str(prediction) + " with confidence: " + str(predictions.count(prediction) / len(predictions)))
+        
+        # Check if prediction has at least 55% confidence
+        if predictions.count(prediction) / len(predictions) < 0.65:
+            prediction = "_"
+            
 
         # Bye bye
         return jsonify({

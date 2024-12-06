@@ -5,22 +5,22 @@ using UnityEngine;
 [Serializable]
 public class Note
 {
-
     [Serializable]
     public enum PitchEnum
     {
         DO,
-        DO_SHARP,
+        // DO_SHARP,
         RE,
-        RE_SHARP,
+        // RE_SHARP,
         MI,
         FA,
-        FA_SHARP,
+        // FA_SHARP,
         SOL,
-        SOL_SHARP,
+        // SOL_SHARP,
         LA,
-        LA_SHARP,
-        SI
+        // LA_SHARP,
+        SI,
+        PAUSE
     }
 
     [Serializable]
@@ -67,6 +67,11 @@ public class Note
         GuessedCounter = 0;
     }
 
+    public static Note GetPause()
+    {
+        return new Note(PitchEnum.PAUSE, OctaveEnum.ZERO);
+    }
+
     private static PitchEnum GetRandomPitch()
     {
         Array values = Enum.GetValues(typeof(PitchEnum));
@@ -87,28 +92,30 @@ public class Note
         {
             case PitchEnum.DO:
                 return "DO";
-            case PitchEnum.DO_SHARP:
-                return "DO#";
+            // case PitchEnum.DO_SHARP:
+            //    return "DO#";
             case PitchEnum.RE:
                 return "RE";
-            case PitchEnum.RE_SHARP:
-                return "RE#";
+            // case PitchEnum.RE_SHARP:
+                // return "RE#";
             case PitchEnum.MI:
                 return "MI";
             case PitchEnum.FA:
                 return "FA";
-            case PitchEnum.FA_SHARP:
-                return "FA#";
+            // case PitchEnum.FA_SHARP:
+                // return "FA#";
             case PitchEnum.SOL:
                 return "SOL";
-            case PitchEnum.SOL_SHARP:
-                return "SOL#";
+            // case PitchEnum.SOL_SHARP:
+                // return "SOL#";
             case PitchEnum.LA:
                 return "LA";
-            case PitchEnum.LA_SHARP:
-                return "LA#";
+            // case PitchEnum.LA_SHARP:
+                // return "LA#";
             case PitchEnum.SI:
                 return "SI";
+            case PitchEnum.PAUSE:
+                return "PAUSE";
             default:
                 return "Error somewhere :( Check the logs!";
         }
@@ -142,6 +149,8 @@ public class Note
                 return "A#";
             case "SI":
                 return "B";
+            case "PAUSE":
+                return "PAUSE";
             default:
                 return "Error somewhere :( Check the logs!";
         }
@@ -154,27 +163,29 @@ public class Note
             case "DO":
                 return PitchEnum.DO;
             case "DO#":
-                return PitchEnum.DO_SHARP;
+                // return PitchEnum.DO_SHARP;
             case "RE":
                 return PitchEnum.RE;
             case "RE#":
-                return PitchEnum.RE_SHARP;
+                // return PitchEnum.RE_SHARP;
             case "MI":
                 return PitchEnum.MI;
             case "FA":
                 return PitchEnum.FA;
             case "FA#":
-                return PitchEnum.FA_SHARP;
+                // return PitchEnum.FA_SHARP;
             case "SOL":
                 return PitchEnum.SOL;
             case "SOL#":
-                return PitchEnum.SOL_SHARP;
+                // return PitchEnum.SOL_SHARP;
             case "LA":
                 return PitchEnum.LA;
             case "LA#":
-                return PitchEnum.LA_SHARP;
+                // return PitchEnum.LA_SHARP;
             case "SI":
                 return PitchEnum.SI;
+            case "PAUSE":
+                return PitchEnum.PAUSE;
             default:
                 throw new Exception("Invalid pitch!");
         }
@@ -184,6 +195,10 @@ public class Note
     {
         switch (octave)
         {
+            case "0":
+                return OctaveEnum.ZERO;
+            case "PAUSE":
+                return OctaveEnum.ZERO;
             case "1":
                 return OctaveEnum.ONE;
             case "2":
@@ -214,30 +229,57 @@ public class Note
         {
             throw new Exception("No more notes available!");
         }
-        PitchEnum nextPitch = (PitchEnum)((int)(Pitch + 1) % Enum.GetValues(typeof(PitchEnum)).Length);
+        PitchEnum nextPitch = (PitchEnum)((int)(Pitch + 1) % (Enum.GetValues(typeof(PitchEnum)).Length - 1));
         OctaveEnum nextOctave = Pitch == PitchEnum.SI ? Octave + 1 : Octave;
         return new Note(nextPitch, nextOctave);
     }
 
     private static int ComputeDistance(Note startNote, Note endNote)
     {
-        return ((int)(endNote.Pitch - startNote.Pitch)) + ((int)(endNote.Octave - startNote.Octave) * Enum.GetValues(typeof(PitchEnum)).Length);
+        return ((int)(endNote.Pitch - startNote.Pitch)) + ((int)(endNote.Octave - startNote.Octave) * (Enum.GetValues(typeof(PitchEnum)).Length - 1));
     }
 
     public int ComputeDistance()
     {
+        if (Pitch == PitchEnum.PAUSE && Octave == OctaveEnum.ZERO)
+        {
+            return NotesList.Notes.Length - 1;
+        }
         Note startNote = NotesList.GetFirstNote();
         return ComputeDistance(startNote, this);
     }
 
     public override string ToString()
     {
+        if (Pitch == PitchEnum.PAUSE && Octave == OctaveEnum.ZERO)
+        {
+            return "PAUSE";
+        }
         return PitchToString(Pitch) + OctaveToString(Octave);
     }
 
     public string ToStringInternational()
     {
+        if (Pitch == PitchEnum.PAUSE && Octave == OctaveEnum.ZERO)
+        {
+            return "PAUSE";
+        }
         return PitchEuropeanToInternational(PitchToString(Pitch)) + OctaveToString(Octave);
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (obj == null || GetType() != obj.GetType())
+        {
+            return false;
+        }
+        Note note = (Note)obj;
+        return Pitch == note.Pitch && Octave == note.Octave;
+    }
+
+    public override int GetHashCode()
+    {
+        return 0;
     }
 
 }
